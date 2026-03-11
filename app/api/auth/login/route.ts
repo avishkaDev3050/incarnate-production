@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
     // Check user
     const [rows]: any = await db.execute(
-      "SELECT * FROM Admin WHERE username = ? LIMIT 1",
+      "SELECT * FROM admin WHERE username = ? LIMIT 1",
       [username]
     );
 
