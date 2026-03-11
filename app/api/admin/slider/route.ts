@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     }
 
     const [result]: any = await db.execute(
-      "INSERT INTO Slider (main_title, sub_title, image_url) VALUES (?, ?, ?)",
+      "INSERT INTO slider (main_title, sub_title, image_url) VALUES (?, ?, ?)",
       [title, subTitle, imageUrl]
     );
 
@@ -42,7 +42,7 @@ export async function GET() {
   try {
     // Fetch sliders ordered by the newest first
     const [rows] = await db.execute(
-      "SELECT id, main_title, sub_title, image_url FROM Slider ORDER BY id DESC"
+      "SELECT id, main_title, sub_title, image_url FROM slider ORDER BY id DESC"
     );
 
     return NextResponse.json({

@@ -16,7 +16,7 @@ export async function DELETE(
     }
 
     const [rows]: any = await db.execute(
-      "SELECT image_url FROM Slider WHERE id = ?",
+      "SELECT image_url FROM slider WHERE id = ?",
       [id]
     );
 

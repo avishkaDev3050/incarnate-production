@@ -16,7 +16,7 @@ export async function DELETE(
     }
 
     const [rows]: any = await db.execute(
-      "SELECT image_url FROM Promotions WHERE id = ?",
+      "SELECT image_url FROM promotions WHERE id = ?",
       [id]
     );
 

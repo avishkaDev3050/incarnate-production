@@ -7,7 +7,7 @@ import path from "path";
 export async function GET() {
   try {
     const [rows]: any = await db.execute(
-      "SELECT * FROM Promotions ORDER BY created_at DESC"
+      "SELECT * FROM promotions ORDER BY created_at DESC"
     );
     return NextResponse.json({ success: true, data: rows });
   } catch (error: any) {
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
 
     // Insert to database (අලුත් columns දෙක මෙතනට එකතු කළා)
     const [result]: any = await db.execute(
-      "INSERT INTO Promotions (title1, title2, description, flag, btn_text, btn_url, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO promotions (title1, title2, description, flag, btn_text, btn_url, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)",
       [title1, title2, description, flag, btn_text, btn_url, imageUrl]
     );
 
