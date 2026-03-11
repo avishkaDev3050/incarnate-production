@@ -13,10 +13,10 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-6">
               <div className="bg-white p-1 rounded-lg">
-                <Image src="/logo.png" alt="Logo" width={40} height={40} />
+                <Image src="/logo2.jpg" alt="Logo" width={40} height={40} />
               </div>
               <span className="font-bold text-xl tracking-wider text-yellow-400">
-                P&S
+                Incarnate Life
               </span>
             </Link>
             <p className="text-blue-100 text-sm leading-relaxed">
@@ -42,8 +42,8 @@ const Footer = () => {
               <li><Link href="/" className="hover:text-yellow-400 transition">Home</Link></li>
               <li><Link href="/about" className="hover:text-yellow-400 transition">Our Story</Link></li>
               <li><Link href="/classes" className="hover:text-yellow-400 transition">All Classes</Link></li>
-              <li><Link href="/instructors" className="hover:text-yellow-400 transition">Instructors</Link></li>
-              <li><Link href="/pricing" className="hover:text-yellow-400 transition">Pricing Plans</Link></li>
+              <li><Link href="/instructors" className="hover:text-yellow-400 transition">Teachers</Link></li>
+              <li><Link href="/shop" className="hover:text-yellow-400 transition">Shop</Link></li>
             </ul>
           </div>
 
@@ -53,15 +53,15 @@ const Footer = () => {
             <ul className="space-y-4 text-blue-100">
               <li className="flex items-start gap-3">
                 <MapPin className="text-yellow-400 mt-1" size={18} />
-                <span>123 Peace Avenue, <br />Colombo 07, Sri Lanka</span>
+                <span>Pyecombe Lodge, 2 Church Lane</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="text-yellow-400" size={18} />
-                <span>+94 112 345 678</span>
+                <span>+44 7769975454</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="text-yellow-400" size={18} />
-                <span>hello@psalmsandstretches.com</span>
+                <span>office@miw.org.uk</span>
               </li>
             </ul>
           </div>
