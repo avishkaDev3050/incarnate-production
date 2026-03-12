@@ -1,49 +1,81 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import PageHero from "@/components/PageHero";
 import TeamSection from "@/components/TeamSection";
 import VisionMision from "@/components/VisionMission";
+import { Loader2 } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+interface Paragraph {
+  content: string;
+}
+
+interface AboutData {
+  title1: string;
+  title2: string;
+  image_url: string;
+  paragraphs: Paragraph[];
+}
+
 export default function AboutUs() {
   const containerRef = useRef(null);
+  const [aboutData, setAboutData] = useState<AboutData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Static Data
-  const aboutData = {
-    title1: "Learn More About",
-    title2: "Incarnate",
-    image_url: "/uploads/about.png",
-    paragraphs: [
-      {
-        content: "Incarnate was birthed from the desire to weave my spirituality into the whole of my life. Experiencing the spiritual through faith, through encounters and through the supernatural posses a huge amount of challenges and questions. How does it all fit into this world that I am living in."
-      }
-    ]
-  };
-
-  // GSAP Animation Logic
+  // 1. Fetch Data from API
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".reveal-section", {
-        scrollTrigger: {
-          trigger: ".reveal-section",
-          start: "top 80%",
-        },
-        y: 50,
-        opacity: 0,
-        duration: 1.2,
-        ease: "power3.out"
-      });
-    }, containerRef);
-    return () => ctx.revert();
+    const fetchAbout = async () => {
+      try {
+        const res = await fetch("/api/admin/about");
+        const result = await res.json();
+        if (result.success && result.data) {
+          setAboutData(result.data);
+        }
+      } catch (error) {
+        console.error("Error fetching about data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAbout();
   }, []);
+
+  // 2. GSAP Animation Logic (Data load වුණාට පස්සේ run වෙන්න ඕනේ)
+  useEffect(() => {
+    if (!loading && aboutData) {
+      const ctx = gsap.context(() => {
+        gsap.from(".reveal-section", {
+          scrollTrigger: {
+            trigger: ".reveal-section",
+            start: "top 80%",
+          },
+          y: 50,
+          opacity: 0,
+          duration: 1.2,
+          ease: "power3.out"
+        });
+      }, containerRef);
+      return () => ctx.revert();
+    }
+  }, [loading, aboutData]);
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-white">
+        <Loader2 className="animate-spin text-blue-900" size={40} />
+      </div>
+    );
+  }
+
+  if (!aboutData) return null;
 
   return (
     <main ref={containerRef} className="bg-white overflow-hidden">
-      {/* Page Hero - Background image එක /back.png ලෙසම තබා ඇත */}
+      {/* Page Hero */}
       <PageHero image="/back.png" title="About Us" />
 
       <section className="reveal-section py-24 px-6 max-w-7xl mx-auto">
@@ -52,7 +84,7 @@ export default function AboutUs() {
           {/* Left Side: Image */}
           <div className="relative group overflow-hidden rounded-[3rem] shadow-2xl bg-slate-100 order-1">
             <Image 
-              src={aboutData.image_url} 
+              src={aboutData.image_url || "/uploads/about.png"} 
               alt="Our Story" 
               width={600} 
               height={800} 
@@ -74,7 +106,7 @@ export default function AboutUs() {
             </div>
 
             <div className="space-y-6">
-              {aboutData.paragraphs.map((para, index) => (
+              {aboutData.paragraphs && aboutData.paragraphs.map((para, index) => (
                 <p key={index} className="text-slate-600 text-lg leading-relaxed font-light">
                   {para.content}
                 </p>
@@ -86,7 +118,6 @@ export default function AboutUs() {
       </section>
 
       <VisionMision />
-      
       <TeamSection />
     </main>
   );

@@ -1,25 +1,62 @@
 "use client";
-import { ArrowRight } from "lucide-react"; 
+import React, { useEffect, useState } from "react";
+import { ArrowRight, Loader2 } from "lucide-react"; 
 import Link from "next/link"; 
 
+// Data structure එක define කරමු
+interface Promotion {
+  id: number;
+  flag: string;
+  title1: string;
+  title2: string;
+  description: string;
+  btn_text: string;
+  btn_url: string;
+  image_url: string;
+}
+
 export default function ModernAd() {
-  // Static Data - මෙතනින් ඕනෑම වෙලාවක විස්තර වෙනස් කරගන්න පුළුවන්
-  const promo = {
-    flag: "Advert",
-    title1: "Become an",
-    title2: "Incarnate Teacher",
-    description: "Join our training session on …… Learn how to guide people to engage in their spiritual journey. To delve deeper and to take on the practice of embodying spirituality.",
-    btn_text: "Register Now",
-    btn_url: "/training", // ඔයාට අවශ්‍ය link එක මෙතනට දාන්න
-    image_url: "/uploads/promotions/1773067586074_promo.jpeg"
-  };
+  const [promo, setPromo] = useState<Promotion | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPromotion = async () => {
+      try {
+        const response = await fetch("/api/admin/promotions"); 
+        const result = await response.json();
+        
+        if (result.success && result.data.length > 0) {
+          // අලුත්ම promotion එක (පළවෙනි එක) ලබා ගනිමු
+          setPromo(result.data[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching promotion:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPromotion();
+  }, []);
+
+  // Loading state එක
+  if (loading) {
+    return (
+      <div className="py-20 flex justify-center items-center">
+        <Loader2 className="animate-spin text-blue-900" size={40} />
+      </div>
+    );
+  }
+
+  // DB එකේ කිසිම promotion එකක් නැතිනම් section එක පෙන්වන්නේ නැත
+  if (!promo) return null;
 
   return (
     <section className="py-20 px-6 bg-white">
       <div className="max-w-7xl mx-auto overflow-hidden rounded-3xl border-2 border-blue-50/50 shadow-xl bg-white">
         <div className="flex flex-col md:flex-row items-center">
           
-          {/* Left Side: Static Image */}
+          {/* Left Side: Dynamic Image */}
           <div className="relative w-full md:w-1/2 h-87.5 md:h-125 overflow-hidden group">
             <img
               src={promo.image_url} 
@@ -50,9 +87,9 @@ export default function ModernAd() {
             </p>
 
             <div className="pt-4">
-              <Link href={promo.btn_url}>
+              <Link href={promo.btn_url || "#"}>
                 <div className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-900 hover:bg-yellow-500 hover:text-blue-900 text-white font-bold px-10 py-4 rounded-xl transition-all shadow-lg active:scale-95 cursor-pointer">
-                  {promo.btn_text} <ArrowRight size={20} />
+                  {promo.btn_text || "Learn More"} <ArrowRight size={20} />
                 </div>
               </Link>
             </div>
