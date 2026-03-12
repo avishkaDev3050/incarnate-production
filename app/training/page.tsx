@@ -32,8 +32,8 @@ export default function AboutUs() {
   return (
     <main className="bg-white pb-20">
       <PageHero
-        image="/back.png"
-        title="Training"
+        image="/banner.png"
+        title="Teacher Training"
       />
 
       {/* 1. Class Experience Section */}

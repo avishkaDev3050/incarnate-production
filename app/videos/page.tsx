@@ -24,7 +24,7 @@ export default function VideosPage() {
             className="min-h-screen bg-white pt-24 pb-20 px-6 md:px-12"
         >
             <VideosHero
-                image="/back.png"
+                image="/banner.png"
                 title="Our Videos"
             />
             <div className="reveal-section">

@@ -76,7 +76,7 @@ export default function AboutUs() {
   return (
     <main ref={containerRef} className="bg-white overflow-hidden">
       {/* Page Hero */}
-      <PageHero image="/back.png" title="About Us" />
+      <PageHero image="/banner.png" title="About Us" />
 
       <section className="reveal-section py-24 px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">

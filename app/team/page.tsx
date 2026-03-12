@@ -78,7 +78,7 @@ export default function TeamPage() {
 
     return (
         <main ref={mainRef} className="min-h-screen bg-white pb-20 overflow-x-hidden">
-            <TeamHero image="/back.png" title="Our Team" />
+            <TeamHero image="/banner.png" title="Our Team" />
 
             <div className="max-w-7xl mx-auto py-20 px-6 md:px-12">
                 <div className="text-center mb-20">

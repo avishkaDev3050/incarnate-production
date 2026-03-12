@@ -36,7 +36,7 @@ export default function Frequently() {
     <main ref={mainRef} className="bg-white pb-20">
       {/* Hero Section */}
       <PageHero 
-        image="/back.png"
+        image="/banner.png"
         title="Frequently Asked Questions"
       />
       

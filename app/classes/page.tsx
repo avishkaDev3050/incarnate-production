@@ -92,7 +92,7 @@ export default function ClassesPage() {
 
   return (
     <main ref={mainRef} className="min-h-screen bg-slate-50 opacity-0 transition-opacity">
-      <ClassesHero image="/back.png" title="Our Classes" />
+      <ClassesHero image="/banner.png" title="Our Classes" />
 
       <div className="max-w-7xl mx-auto py-16 px-6 md:px-12">
         
