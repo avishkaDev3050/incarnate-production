@@ -3,8 +3,8 @@ import mysql from 'mysql2/promise';
 // Use environment variables for production
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'incarnate_user',
-  password: process.env.DB_PASSWORD || '1ncarnat34l1f3',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'mAvishka@2002',
   database: process.env.DB_NAME || 'incarnet',
   waitForConnections: true,
   connectionLimit: 10,

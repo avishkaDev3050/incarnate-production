@@ -32,7 +32,7 @@ export default function ClassCard({ data, onViewDetails }: ClassProps) {
           month: "short",
           day: "numeric",
           year: "numeric",
-        })
+        }),
       );
     }
   }, [data?.event_date]);
@@ -41,11 +41,14 @@ export default function ClassCard({ data, onViewDetails }: ClassProps) {
 
   return (
     <div className="group bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 border border-slate-100 flex flex-col h-full transform hover:-translate-y-1">
-      
       {/* 1. Image Area */}
       <div className="relative h-64 overflow-hidden">
         <Image
-          src={data?.image || data?.image_url || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600"}
+          src={
+            data?.image || data?.image_url
+              ? `${data.image || data.image_url}?t=${new Date().getTime()}`
+              : "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600"
+          }
           alt={data?.title || "Class Image"}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -72,7 +75,9 @@ export default function ClassCard({ data, onViewDetails }: ClassProps) {
               <User size={18} />
             </div>
             <span className="text-sm font-medium">
-              <span className="text-blue-900/60 font-semibold uppercase text-[10px] block tracking-widest">Instructor</span>
+              <span className="text-blue-900/60 font-semibold uppercase text-[10px] block tracking-widest">
+                Instructor
+              </span>
               <span className="text-slate-800">{data?.teacher_name}</span>
             </span>
           </div>
@@ -100,12 +105,15 @@ export default function ClassCard({ data, onViewDetails }: ClassProps) {
 
         {/* 3. Button Area */}
         <div className="pt-8 mt-auto">
-          <button 
+          <button
             onClick={() => onViewDetails(data)}
             className="w-full flex items-center justify-center gap-2 bg-blue-900 hover:bg-yellow-400 text-white hover:text-blue-900 font-bold py-4 rounded-2xl transition-all duration-300 active:scale-[0.98] group/btn shadow-lg shadow-blue-900/10"
           >
             <span>View Details</span>
-            <ArrowRight size={20} className="group-hover/btn:translate-x-1 transition-transform" />
+            <ArrowRight
+              size={20}
+              className="group-hover/btn:translate-x-1 transition-transform"
+            />
           </button>
         </div>
       </div>
