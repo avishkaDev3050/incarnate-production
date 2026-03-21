@@ -1,14 +1,14 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { 
-  UserPlus, Mail, Lock, Camera, Award, CheckCircle2, 
-  ShieldCheck, ArrowRight, UserCircle, Search, Eye, 
-  UserX, X, ShieldAlert, Info, Plus, Phone, RefreshCcw
+  UserPlus, Camera, CheckCircle2, ShieldCheck, UserCircle, 
+  Search, Eye, UserX, X, Plus
 } from "lucide-react";
 import Swal from "sweetalert2";
 
 export default function InstructorManagement() {
-  // ... (කලින් තිබුණු සියලුම states සහ fetch functions මෙතනට එන්න ඕනේ)
+
+  // ===== STATES =====
   const [fullName, setFullName] = useState("");
   const [speciality, setSpeciality] = useState("");
   const [email, setEmail] = useState("");
@@ -16,132 +16,206 @@ export default function InstructorManagement() {
   const [password, setPassword] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const [instructors, setInstructors] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // ===== FETCH =====
   const fetchInstructors = async () => {
     try {
       const res = await fetch("/api/admin/instructors");
       const json = await res.json();
       if (json.success) setInstructors(json.data);
-    } catch (error) { console.error(error); }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => { fetchInstructors(); }, []);
 
-  // --- දත් දෙකම වැඩ කරන (Activate/Deactivate) Function එක ---
-  const handleStatusUpdate = async (id: number, currentStatus: number) => {
-    const newStatus = currentStatus === 1 ? 0 : 1; // 1 නම් 0 කරනවා, 0 නම් 1 කරනවා
-    const actionText = newStatus === 1 ? "Activate" : "Deactivate";
-    
-    const confirm = await Swal.fire({
-      title: 'Are you sure?',
-      text: `Do you want to ${actionText} this instructor?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: newStatus === 1 ? '#10b981' : '#dc2626',
-      confirmButtonText: `Yes, ${actionText}`
-    });
-
-    if (confirm.isConfirmed) {
-      try {
-        const res = await fetch("/api/admin/instructors", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id, status: newStatus }),
-        });
-        if (res.ok) {
-          Swal.fire('Success!', `Profile ${actionText}d successfully.`, 'success');
-          setSelectedInstructor(null);
-          fetchInstructors();
-        }
-      } catch (err) { console.error(err); }
+  // ===== IMAGE =====
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
-  // ... (handleRegister සහ handleImageChange functions කලින් වගේමයි)
+  // ===== REGISTER =====
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!imageFile) return alert("Please upload an image");
+
+    setIsSubmitting(true);
+
+    const formData = new FormData();
+    formData.append("full_name", fullName);
+    formData.append("speciality", speciality);
+    formData.append("email", email);
+    formData.append("mobile", mobile);
+    formData.append("password", password);
+    formData.append("image", imageFile);
+
+    try {
+      const res = await fetch("/api/admin/instructors", {
+        method: "POST",
+        body: formData,
+      });
+
+      const json = await res.json();
+
+      if (json.success) {
+        setIsSuccess(true);
+        setFullName("");
+        setSpeciality("");
+        setEmail("");
+        setMobile("");
+        setPassword("");
+        setImageFile(null);
+        setPreviewUrl(null);
+
+        fetchInstructors();
+        setTimeout(() => setIsSuccess(false), 3000);
+      } else {
+        alert(json.error);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // ===== STATUS UPDATE =====
+  const handleStatusUpdate = async (id: number, currentStatus: number) => {
+    const newStatus = currentStatus === 1 ? 0 : 1;
+    const actionText = newStatus === 1 ? "Activate" : "Deactivate";
+
+    const confirm = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to ${actionText}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: `Yes`
+    });
+
+    if (confirm.isConfirmed) {
+      await fetch("/api/admin/instructors", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus }),
+      });
+
+      fetchInstructors();
+      setSelectedInstructor(null);
+    }
+  };
 
   return (
-    <div className="max-w-6xl mx-auto pb-20 animate-in fade-in duration-700 space-y-24">
-      {/* Registration Form UI (කලින් එවපු එකමයි) */}
-      {/* ... (Register Form Code) ... */}
+    <div className="max-w-6xl mx-auto pb-20 space-y-24">
 
-      {/* SECTION 2: LIST */}
-      <section className="pt-10 border-t border-slate-100">
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-          <div><h2 className="text-3xl font-serif italic text-slate-900">Manage <span className="text-yellow-500">Instructors</span></h2></div>
-          <div className="relative w-full md:w-72">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} type="text" placeholder="Search..." className="w-full bg-white border border-slate-200 p-4 pl-12 rounded-2xl outline-none text-xs" />
-          </div>
-        </header>
+      {/* ================= REGISTER FORM (OLD) ================= */}
+      <section>
+        <h1 className="text-3xl font-bold mb-6">Register Instructor</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {instructors.filter(ins => ins.full_name.toLowerCase().includes(searchTerm.toLowerCase())).map((ins) => (
-            <div key={ins.id} className={`bg-white border border-slate-100 rounded-[2.5rem] p-6 shadow-sm hover:shadow-xl transition-all ${ins.status === 0 ? "opacity-60 grayscale bg-slate-50" : ""}`}>
-              <div className="flex items-center gap-4 mb-6">
-                <img src={ins.image_url} alt="" className="w-16 h-16 rounded-2xl object-cover border-2 border-yellow-400/20" />
-                <div>
-                  <h3 className="font-bold text-slate-900">{ins.full_name}</h3>
-                  <div className="flex items-center gap-2">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{ins.speciality}</p>
-                    {ins.status === 0 && <span className="text-[8px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">INACTIVE</span>}
-                  </div>
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+          {/* IMAGE */}
+          <div>
+            <div onClick={() => fileInputRef.current?.click()} className="cursor-pointer text-center">
+              <div className="w-40 h-40 mx-auto rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                {previewUrl ? (
+                  <img src={previewUrl} className="w-full h-full object-cover" />
+                ) : (
+                  <UserCircle size={80} />
+                )}
               </div>
-              <button onClick={() => setSelectedInstructor(ins)} className="w-full flex items-center justify-center gap-2 bg-blue-50 text-blue-600 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all"><Eye size={14} /> Details</button>
+              <input type="file" ref={fileInputRef} onChange={handleImageChange} hidden />
             </div>
-          ))}
+          </div>
+
+          {/* FORM */}
+          <div className="lg:col-span-2">
+            <form onSubmit={handleRegister} className="space-y-4">
+
+              <input value={fullName} onChange={(e)=>setFullName(e.target.value)} placeholder="Full Name" required className="w-full p-3 border rounded" />
+
+              <input value={speciality} onChange={(e)=>setSpeciality(e.target.value)} placeholder="Speciality" required className="w-full p-3 border rounded" />
+
+              <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" placeholder="Email" required className="w-full p-3 border rounded" />
+
+              <input value={mobile} onChange={(e)=>setMobile(e.target.value)} placeholder="Mobile" required className="w-full p-3 border rounded" />
+
+              <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" placeholder="Password" required className="w-full p-3 border rounded" />
+
+              <button className="w-full bg-blue-600 text-white p-3 rounded">
+                {isSubmitting ? "Loading..." : isSuccess ? "Success" : "Register"}
+              </button>
+
+            </form>
+          </div>
         </div>
       </section>
 
-      {/* MODAL: UPDATED FOR ACTIVATE/DEACTIVATE */}
+      {/* ================= LIST (NEW) ================= */}
+      <section>
+        <h2 className="text-2xl mb-4">Manage Instructors</h2>
+
+        <input 
+          value={searchTerm} 
+          onChange={(e)=>setSearchTerm(e.target.value)} 
+          placeholder="Search..." 
+          className="border p-2 mb-6 w-full"
+        />
+
+        <div className="grid grid-cols-3 gap-4">
+          {instructors
+            .filter(i => i.full_name.toLowerCase().includes(searchTerm.toLowerCase()))
+            .map((ins) => (
+              <div key={ins.id} className={`p-4 border rounded ${ins.status===0 && "opacity-50"}`}>
+                <img src={ins.image_url} className="w-16 h-16 object-cover rounded mb-2" />
+                <h3>{ins.full_name}</h3>
+                <p>{ins.speciality}</p>
+
+                <button onClick={()=>setSelectedInstructor(ins)} className="mt-2 text-blue-500">
+                  View
+                </button>
+              </div>
+            ))}
+        </div>
+      </section>
+
+      {/* ================= MODAL ================= */}
       {selectedInstructor && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => setSelectedInstructor(null)}></div>
-          <div className="relative bg-white w-full max-w-2xl rounded-[3.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-            <div className="h-24 bg-blue-600 flex justify-end p-6"><button onClick={() => setSelectedInstructor(null)} className="text-white/50 hover:text-white"><X size={24}/></button></div>
-            <div className="px-10 pb-10">
-              <div className="relative -mt-12 flex items-end gap-6 mb-8">
-                <img src={selectedInstructor.image_url} alt="" className="w-32 h-32 rounded-[2.5rem] border-4 border-white shadow-lg object-cover" />
-                <div className="pb-2">
-                  <h2 className="text-2xl font-serif italic text-slate-900">{selectedInstructor.full_name}</h2>
-                  <p className="text-xs font-bold text-blue-600 uppercase tracking-widest">{selectedInstructor.speciality}</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Biography</p>
-                  <p className="text-sm text-slate-600 italic leading-relaxed">{selectedInstructor.bio || "No biography added yet."}</p>
-                </div>
-                <div className="bg-slate-50 p-6 rounded-3xl space-y-4 text-xs font-bold uppercase tracking-widest text-slate-400">
-                  <div className="flex justify-between"><span>Email</span><span className="text-slate-900 lowercase">{selectedInstructor.email}</span></div>
-                  <div className="flex justify-between"><span>Mobile</span><span className="text-slate-900">{selectedInstructor.mobile || "N/A"}</span></div>
-                  
-                  {/* DYNAMIC BUTTON BASED ON STATUS */}
-                  {selectedInstructor.status === 1 ? (
-                    <button 
-                      onClick={() => handleStatusUpdate(selectedInstructor.id, 1)}
-                      className="w-full mt-4 py-3 bg-red-600 text-white rounded-xl text-[10px] font-bold hover:bg-slate-900 transition-all flex items-center justify-center gap-2"
-                    >
-                      <UserX size={14}/> Deactivate Profile
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={() => handleStatusUpdate(selectedInstructor.id, 0)}
-                      className="w-full mt-4 py-3 bg-emerald-600 text-white rounded-xl text-[10px] font-bold hover:bg-slate-900 transition-all flex items-center justify-center gap-2"
-                    >
-                      <CheckCircle2 size={14}/> Activate Profile
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+
+          <div className="bg-white p-6 rounded w-[400px]">
+            <h2>{selectedInstructor.full_name}</h2>
+
+            <p>{selectedInstructor.email}</p>
+            <p>{selectedInstructor.mobile}</p>
+
+            {selectedInstructor.status === 1 ? (
+              <button onClick={()=>handleStatusUpdate(selectedInstructor.id,1)} className="bg-red-500 text-white p-2 mt-4 w-full">
+                Deactivate
+              </button>
+            ) : (
+              <button onClick={()=>handleStatusUpdate(selectedInstructor.id,0)} className="bg-green-500 text-white p-2 mt-4 w-full">
+                Activate
+              </button>
+            )}
+
+            <button onClick={()=>setSelectedInstructor(null)} className="mt-2 w-full">
+              Close
+            </button>
           </div>
+
         </div>
       )}
     </div>
