@@ -86,7 +86,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-blue-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-blue-200 text-xs">
-          <p>© 2026 Psalms and Stretches. All Rights Reserved.</p>
+          <p>© 2026 Incarnate Life. All Rights Reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="/privacy" className="hover:text-yellow-400">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-yellow-400">Terms of Service</Link>
