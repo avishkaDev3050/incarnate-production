@@ -48,13 +48,8 @@ export default function VisionMission() {
             Our Vision
           </h2>
           <p className="text-slate-600 text-lg leading-relaxed">
-            Our Vision Spirituality is very much part of our humanity, as
-            western Christians, we experience our faith in a deeply cerebral
-            way, applying rational, logic, deep biblical study to our spiritual
-            journey. Our vision is to enhance that journey by engaging the whole
-            of who we are on that journey. Our soul, the seat of our emotions
-            and our body. To encourage emotional and physical engagement as we
-            grow in our faith.
+            o empower a globally successful generation through technology-driven
+            modern education.
           </p>
         </div>
 
@@ -70,13 +65,8 @@ export default function VisionMission() {
             Our Mission
           </h2>
           <p className="text-slate-600 text-lg leading-relaxed">
-            The Christian faith has so much going for it. The compassionate
-            values that are resourced by the Holy Spirit. Love, joy, peace,
-            goodness, kindness, gentleness, self-control, patience and
-            faithfulness. These qualities and values are deeply spiritual as
-            they are fruit of the Holy Spirit. The mission is to encourage
-            people dwell on these amazing values, through meditation and action,
-            introducing them to our mind, soul and bodies. F
+            To provide every student with a high-quality, practical, and
+            interactive learning experience.
           </p>
         </div>
       </div>

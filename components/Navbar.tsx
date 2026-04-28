@@ -31,7 +31,7 @@ const Navbar = () => {
             <Link href="/" className="flex items-center gap-2">
               <Image src="/logo2.png" alt="Logo" width={50} height={50} className="object-contain" />
               <span className="text-blue-900 font-bold text-xl hidden md:block uppercase tracking-wider">
-                INCARNET
+                INCARNATE LIFE
               </span>
             </Link>
           </div>

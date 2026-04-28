@@ -67,7 +67,7 @@ export default function Preloader() {
         <div ref={logoRef} className="relative w-48 h-48 mb-6">
           <Image
             src="/logo2.png"
-            alt="Psalms and Stretches Logo"
+            alt="Incanate Logo"
             fill
             className="object-contain"
             priority
@@ -77,7 +77,7 @@ export default function Preloader() {
         {/* Text with Letter Spacing */}
         <div ref={textRef} className="overflow-hidden">
            <p className="text-blue-900 font-bold tracking-[0.3em] uppercase text-[10px] md:text-xs italic">
-            Nourishing Body & Soul
+            ‘infusing body mind and soul spiritually’
           </p>
           {/* Progress bar line (Optional) */}
           <div className="w-full h-[2px] bg-slate-100 mt-4 overflow-hidden">

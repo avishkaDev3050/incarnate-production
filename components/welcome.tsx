@@ -52,7 +52,7 @@ export default function WelcomeSection() {
   if (!data) return null;
 
   // Experience text එක වචන දෙකකට කඩා ගැනීම (Floating card එක සඳහා)
-  const expWords = data.experience_text ? data.experience_text.split(" ") : ["Embodying", "Spirituality"];
+  const expWords = data.experience_text ? data.experience_text.split(" ") : ["10+ Years ", "Experience"];
   const expMain = expWords[0];
   const expSub = expWords.slice(1).join(" ");
 

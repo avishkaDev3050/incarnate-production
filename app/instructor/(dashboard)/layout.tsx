@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie"; 
 import { 
   LayoutDashboard, UserCircle, BookOpen, 
-  LogOut, Menu, X, Sparkles 
+  LogOut, Menu, X, Sparkles, UserPlus
 } from "lucide-react";
 
 export default function InstructorLayout({ children }: { children: React.ReactNode }) {
@@ -28,6 +28,7 @@ export default function InstructorLayout({ children }: { children: React.ReactNo
     { name: "Profile Management", icon: UserCircle, path: "/instructor/profile" },
     { name: "Classes Management", icon: BookOpen, path: "/instructor/classes" },
     { name: "My Lessons", icon: BookOpen, path: "/instructor/lessons" },
+    { name: "Register Student", icon: UserPlus, path: "/instructor/students" },
   ];
 
   if (isLoading) {

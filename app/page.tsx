@@ -9,6 +9,7 @@ import WelcomeSection from "@/components/welcome";
 import Testimonials from "@/components/Testimonials";
 import Gallery from "@/components/Gallery";
 import TeamSection from "@/components/TeamSection";
+import WellbeingHero from "@/components/Wellbing";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -64,11 +65,17 @@ export default function Home() {
 
   return (
     <main ref={mainRef} className="min-h-screen bg-white overflow-x-hidden perspective-1000">
-      <HeroSlider />
+      <div className="pt-[100]">
+        <HeroSlider />
+      </div>
 
       {/* Sections එකින් එක reveal-section class එක හරහා animate වේ */}
       <div className="reveal-section will-change-transform">
         <NewsBar />
+      </div>
+
+      <div className="reveal-section will-change-transform">
+        <WellbeingHero />
       </div>
 
       <div className="reveal-section will-change-transform">
