@@ -15,7 +15,7 @@ const Navbar = () => {
     { name: "Classes", href: "/classes" },
     { name: "Videos", href: "/videos" },
     { name: "Teachers", href: "/team" },
-    { name: "Teachers Training", href: "/training" },
+    // { name: "Teachers Training", href: "/training" },
     { name: "Shop", href: "/shop" },
     { name: "FAQs", href: "/frequently" },
     { name: "Sign In", href: "/instructor/login" },
