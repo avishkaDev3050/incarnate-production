@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Incarnet Life",
+  title: "Incarnete Life",
   description: "Experience spiritual motion and professional management.",
 };
 
