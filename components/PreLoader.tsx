@@ -12,7 +12,7 @@ export default function Preloader() {
 
   useEffect(() => {
     const tl = gsap.timeline({
-      onComplete: () => setLoading(false), // Animation එක ඉවර වුණාම component එක ඉවත් කරන්න
+      onComplete: () => setLoading(false), 
     });
 
     // 1. Initial State: සැඟවීම
@@ -53,8 +53,6 @@ export default function Preloader() {
     };
   }, []);
 
-  // Loading False වුණත් animation එක ඉවර වෙනකම් DOM එකේ තියෙන්න ඕනේ
-  // ඒත් මේ component එක return null කරන්නේ tl.onComplete එකෙන් පස්සේ
 
   return (
     <div

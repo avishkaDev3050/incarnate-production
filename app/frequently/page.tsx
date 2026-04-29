@@ -29,8 +29,7 @@ export default function Frequently() {
     return () => ctx.revert();
   }, []);
 
-  // FAQ Sections 5ක් පෙන්වීමට array එකක්
-  const faqSections = [1, 2, 3, 4, 5];
+  const faqSections = [1];
 
   return (
     <main ref={mainRef} className="bg-white pb-20">
