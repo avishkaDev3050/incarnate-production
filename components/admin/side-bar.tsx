@@ -23,6 +23,7 @@ const Sidebar = ({ isOpen, setIsOpen }: any) => {
     { name: "Site Content", href: "/admin/content", icon: Settings },
     { name: "Wellbeing Journey", href: "/admin/wellbeing", icon: Settings },
     { name: "FAQs Content", href: "/admin/faqs", icon: Settings },
+    { name: "Facilitators Content", href: "/admin/training", icon: Settings },
     { name: "Register Instructor", href: "/admin/register-instructor", icon: UserPlus },
     { name: "Instructor Edits", href: "/admin/profile-approvals", icon: Users },
     { name: "Class Approvals", href: "/admin/classes", icon: CalendarCheck },
