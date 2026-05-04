@@ -55,7 +55,7 @@ export default function ManageFaqs() {
       </div>
 
       {isEditing && (
-        <form onSubmit={handleSave} className="mb-10 bg-white p-6 rounded-[2rem] border border-blue-100 shadow-xl space-y-4">
+        <form onSubmit={handleSave} className="mb-10 bg-white p-6 rounded-4xl border border-blue-100 shadow-xl space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="font-bold text-slate-700">{isEditing.id ? "Edit FAQ" : "New FAQ"}</h2>
             <button type="button" onClick={() => setIsEditing(null)}><X size={20}/></button>
@@ -68,7 +68,7 @@ export default function ManageFaqs() {
         </form>
       )}
 
-      <div className="bg-white rounded-[2rem] border border-slate-100 shadow-lg overflow-hidden">
+      <div className="bg-white rounded-4xl border border-slate-100 shadow-lg overflow-hidden">
         <table className="w-full">
           <thead className="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-400 uppercase">
             <tr>
