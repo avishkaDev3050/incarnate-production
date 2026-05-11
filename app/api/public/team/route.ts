@@ -5,7 +5,7 @@ export async function GET() {
   try {
     // We select specifically for approved = 0 based on your table data
     const [rows]: any = await db.execute(
-      "SELECT id, full_name, speciality, email, image_url, bio, status, approved, created_at FROM instructors WHERE approved = 1 ORDER BY created_at DESC"
+      "SELECT id, full_name, speciality, email, image_url, bio, status, approved, created_at FROM instructors WHERE approved = 1 AND status = 1 ORDER BY created_at DESC"
     );
 
     // If no data is found, we still return a 200 with an empty array
