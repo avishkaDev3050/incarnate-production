@@ -45,7 +45,7 @@ export default function InstructorLayout({ children }: { children: React.ReactNo
       {/* z-[100] wenuwata z-100 use kala */}
       <div className="md:hidden bg-white border-b border-slate-100 p-4 flex justify-between items-center sticky top-0 z-100">
         <div className="flex items-center gap-2 text-blue-600 font-serif italic font-bold">
-          <Sparkles size={20} className="text-yellow-500" /> Incarnet
+          <Sparkles size={20} className="text-yellow-500" /> Incarnate
         </div>
         <button onClick={() => setIsOpen(!isOpen)} className="p-2 text-slate-600 bg-slate-50 rounded-xl">
           {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -59,7 +59,7 @@ export default function InstructorLayout({ children }: { children: React.ReactNo
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
       `}>
         <div className="hidden md:flex items-center gap-2 text-blue-600 font-serif italic font-bold text-2xl mb-12">
-          <Sparkles size={28} className="text-yellow-500" /> Incarnet
+          <Sparkles size={28} className="text-yellow-500" /> Incarnate
         </div>
 
         <nav className="space-y-2">

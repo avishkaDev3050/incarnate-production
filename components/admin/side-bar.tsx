@@ -74,7 +74,7 @@ const Sidebar = ({ isOpen, setIsOpen }: any) => {
           {/* Logo Area */}
           <div className="flex justify-between items-center mb-6 px-3 flex-shrink-0">
             <div>
-              <h2 className="text-xl font-serif italic text-white tracking-wide">Incarnet</h2>
+              <h2 className="text-xl font-serif italic text-white tracking-wide">Incarnate</h2>
               <p className="text-[9px] uppercase tracking-[0.25em] text-blue-400 font-bold mt-0.5">Super Admin</p>
             </div>
             <button 
