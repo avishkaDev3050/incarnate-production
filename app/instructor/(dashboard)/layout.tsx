@@ -24,7 +24,7 @@ export default function InstructorLayout({ children }: { children: React.ReactNo
   };
 
   const menuItems = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/instructor" },
+    // { name: "Dashboard", icon: LayoutDashboard, path: "/instructor" },
     { name: "Profile Management", icon: UserCircle, path: "/instructor/profile" },
     { name: "Classes Management", icon: BookOpen, path: "/instructor/classes" },
     { name: "My Lessons", icon: BookOpen, path: "/instructor/lessons" },

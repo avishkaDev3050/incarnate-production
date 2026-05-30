@@ -28,6 +28,7 @@ export async function POST(req: Request) {
     const date = formData.get("date") as string;
     const time = formData.get("time") as string;
     const address = formData.get("address") as string;
+    const city = formData.get("city") as string; // ✅ Get City from form
     const image = formData.get("image") as File;
 
     let image_url = "";
@@ -41,13 +42,15 @@ export async function POST(req: Request) {
       image_url = `/classes/${filename}`;
     }
 
+    // ✅ Placeholders 8කට අදාළව array එකට [city] එකතු කර නිවැරදි කරන ලදී
     const [result]: any = await db.query(
-      "INSERT INTO classes (title, teacher_name, event_date, event_time, address, image, teacher_email) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [title, teacher_name, date, time, address, image_url, payload.username]
+      "INSERT INTO classes (title, teacher_name, event_date, event_time, address, image, teacher_email, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [title, teacher_name, date, time, address, image_url, payload.username, city]
     );
 
     return NextResponse.json({ success: true, instructorId: result.insertId });
   } catch (error: any) {
+    console.error("POST Error:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
@@ -58,7 +61,6 @@ export async function GET() {
     const payload = await getAuthUser();
     if (!payload) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    // Corrected query to filter by the logged-in teacher's email
     const [rows]: any = await db.query(
       "SELECT * FROM classes WHERE teacher_email = ? ORDER BY id DESC",
       [payload.username]
@@ -70,7 +72,7 @@ export async function GET() {
   }
 }
 
-// 3. UPDATE (PUT) - Expected URL: /api/classes?id=1
+// 3. UPDATE (PUT)
 export async function PUT(req: Request) {
   try {
     const payload = await getAuthUser();
@@ -80,20 +82,17 @@ export async function PUT(req: Request) {
     const id = searchParams.get("id");
     const formData = await req.formData();
 
-    // Check if a new image was uploaded
+    const title = formData.get("title");
+    const teacher_name = formData.get("teacher_name");
+    const date = formData.get("date");
+    const time = formData.get("time");
+    const address = formData.get("address");
+    const city = formData.get("city"); // ✅ Get City from form
     const image = formData.get("image");
-    let updateQuery = "UPDATE classes SET title=?, teacher_name=?, event_date=?, event_time=?, address=? WHERE id=? AND teacher_email=?";
-    let queryParams = [
-      formData.get("title"), 
-      formData.get("teacher_name"), 
-      formData.get("date"), 
-      formData.get("time"), 
-      formData.get("address"), 
-      id, 
-      payload.username
-    ];
 
-    // If new image file is provided, handle upload and update image column
+    let updateQuery = "UPDATE classes SET title=?, teacher_name=?, event_date=?, event_time=?, address=?, city=? WHERE id=? AND teacher_email=?";
+    let queryParams = [title, teacher_name, date, time, address, city, id, payload.username];
+
     if (image && typeof image !== "string") {
       const bytes = await (image as File).arrayBuffer();
       const filename = `${Date.now()}_${(image as File).name.replace(/\s+/g, "_")}`;
@@ -101,27 +100,19 @@ export async function PUT(req: Request) {
       await writeFile(path.join(uploadDir, filename), Buffer.from(bytes));
       const image_url = `/classes/${filename}`;
 
-      updateQuery = "UPDATE classes SET title=?, teacher_name=?, event_date=?, event_time=?, address=?, image=? WHERE id=? AND teacher_email=?";
-      queryParams = [
-        formData.get("title"), 
-        formData.get("teacher_name"), 
-        formData.get("date"), 
-        formData.get("time"), 
-        formData.get("address"), 
-        image_url, 
-        id, 
-        payload.username
-      ];
+      updateQuery = "UPDATE classes SET title=?, teacher_name=?, event_date=?, event_time=?, address=?, city=?, image=? WHERE id=? AND teacher_email=?";
+      queryParams = [title, teacher_name, date, time, address, city, image_url, id, payload.username];
     }
 
     await db.query(updateQuery, queryParams);
     return NextResponse.json({ success: true, message: "Updated successfully" });
   } catch (error: any) {
+    console.error("PUT Error:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
 
-// 4. DELETE - Expected URL: /api/classes?id=1
+// 4. DELETE
 export async function DELETE(req: Request) {
   try {
     const payload = await getAuthUser();
@@ -130,7 +121,6 @@ export async function DELETE(req: Request) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
-    // Optional: Fetch image path first to delete the file from 'public/classes'
     const [rows]: any = await db.query("SELECT image FROM classes WHERE id=? AND teacher_email=?", [id, payload.username]);
     if (rows.length > 0 && rows[0].image) {
         const filePath = path.join(process.cwd(), "public", rows[0].image);

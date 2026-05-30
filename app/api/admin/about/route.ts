@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
+// Fetch data
 export async function GET() {
   try {
     // MySQL query returns [rows, fields]
@@ -40,6 +41,7 @@ export async function GET() {
   }
 }
 
+// Save data
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();

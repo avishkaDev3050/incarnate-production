@@ -1,132 +1,228 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { 
-  BookOpen, Users, Clock, Plus, 
-  ArrowRight, PlayCircle, MapPin 
+  Camera, User, Award, FileText, 
+  Save, CheckCircle2, Loader2 
 } from "lucide-react";
+import Swal from "sweetalert2";
 
-export default function InstructorDashboard() {
-  // අද දිනට අදාළ පන්ති ලැයිස්තුව
-  const todayClasses = [
-    { 
-      id: 1, 
-      name: "Morning Vinyasa Flow", 
-      time: "06:00 AM - 07:30 AM", 
-      students: 45, 
-      location: "Studio A",
-      isLive: true 
-    },
-    { 
-      id: 2, 
-      name: "Beginner Meditation", 
-      time: "10:30 AM - 11:30 AM", 
-      students: 28, 
-      location: "Online / Zoom",
-      isLive: false 
-    },
-    { 
-      id: 3, 
-      name: "Healing Sound Bath", 
-      time: "05:00 PM - 06:30 PM", 
-      students: 15, 
-      location: "Main Hall",
-      isLive: false 
+interface Profile {
+  id: string;
+  name: string;
+  speciality: string;
+  bio: string;
+  image_url: string;
+  email: string;
+}
+
+export default function ProfileManagement() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // අලුතින් තෝරන file එක තබා ගැනීමට
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [profile, setProfile] = useState<Profile>({
+    id: "",
+    name: "",
+    speciality: "",
+    bio: "",
+    image_url: "",
+    email: ""
+  });
+
+  useEffect(() => {
+    const loadTeacherData = async () => {
+      try {
+        const res = await fetch("/api/instructor");
+        const json = await res.json();
+        if (json.success) {
+          setProfile({
+            id: json.data.id,
+            name: json.data.full_name || "",
+            speciality: json.data.speciality || "",
+            bio: json.data.bio || "",
+            image_url: json.data.image_url || "",
+            email: json.data.email || ""
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load profile", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadTeacherData();
+  }, []);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      Swal.fire("Error", "Image size should be less than 2MB", "error");
+      return;
     }
-  ];
+
+    setSelectedFile(file); // File එක state එකට දාගන්න
+
+    // Preview එකක් පෙන්වීමට පමණක් FileReader භාවිතා කරයි
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfile(prev => ({ ...prev, image_url: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleProfileUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUpdating(true);
+
+    try {
+      // --- FormData භාවිතය (Backend එකේ req.formData() එකට ගැලපෙන ලෙස) ---
+      const formData = new FormData();
+      formData.append("full_name", profile.name);
+      formData.append("speciality", profile.speciality);
+      formData.append("bio", profile.bio);
+      
+      // අලුත් image එකක් තෝරා ඇත්නම් එය එකතු කරන්න
+      if (selectedFile) {
+        formData.append("image", selectedFile);
+      }
+
+      const res = await fetch("/api/instructor", {
+        method: "PUT",
+        body: formData, // JSON.stringify අවශ්‍ය නැත
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        // අලුත් Image URL එක ලැබුනේ නම් එය update කරන්න
+        if (result.image_url) {
+          setProfile(prev => ({ ...prev, image_url: result.image_url }));
+          setSelectedFile(null); // File selection එක clear කරන්න
+        }
+
+        Swal.fire({
+          title: "Success!",
+          text: "Profile updated and old image removed!",
+          icon: "success",
+          confirmButtonColor: "#2563eb",
+        });
+      } else {
+        throw new Error(result.message || "Failed to update");
+      }
+    } catch (err: any) {
+      Swal.fire("Error", err.message || "Something went wrong", "error");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="animate-in fade-in duration-700 space-y-12">
-      
-      {/* --- HEADER --- */}
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-2">February 03, 2026</p>
-          <h2 className="text-4xl font-serif italic text-slate-900">Today's <span className="text-yellow-500">Schedule</span></h2>
-        </div>
-        <button className="px-8 py-4 bg-blue-600 text-white rounded-[1.5rem] font-bold text-[11px] uppercase tracking-widest shadow-xl shadow-blue-100 hover:bg-slate-900 transition-all flex items-center gap-2">
-          <Plus size={16} strokeWidth={3}/> New Class
-        </button>
+    <div className="max-w-6xl mx-auto pb-20 animate-in fade-in duration-700">
+      <header className="mb-10 px-4">
+        <h2 className="text-3xl font-serif italic text-slate-900">
+          Profile <span className="text-blue-600">Management</span>
+        </h2>
+        <div className="h-1 w-12 bg-yellow-400 mt-2 rounded-full"></div>
       </header>
 
-      {/* --- TODAY'S CLASSES LIST --- */}
-      <div className="space-y-4">
-        {todayClasses.map((cls) => (
-          <div 
-            key={cls.id} 
-            className={`relative overflow-hidden bg-white border rounded-[2.5rem] p-6 md:p-8 transition-all hover:shadow-xl hover:shadow-blue-100/20 group
-              ${cls.isLive ? "border-blue-200 ring-2 ring-blue-50" : "border-slate-100"}
-            `}
-          >
-            {/* Live Indicator Decor */}
-            {cls.isLive && (
-              <div className="absolute top-0 right-0 bg-blue-600 text-white px-6 py-2 rounded-bl-[1.5rem] text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
-                <span className="w-2 h-2 bg-white rounded-full animate-ping" />
-                Live Now
+      <form onSubmit={handleProfileUpdate} className="mb-16">
+        <div className="bg-white border border-slate-100 rounded-[3.5rem] p-8 md:p-12 shadow-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+            
+            <div className="lg:col-span-1 flex flex-col items-center">
+              <div 
+                className="relative group cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <div className="w-44 h-44 rounded-[2.5rem] overflow-hidden border-4 border-white ring-4 ring-blue-50 shadow-xl transition-all group-hover:ring-blue-200">
+                  <img 
+                    src={profile.image_url || "https://via.placeholder.com/150"} 
+                    className="w-full h-full object-cover" 
+                    alt="Profile" 
+                  />
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Camera className="text-white" size={32} />
+                  </div>
+                </div>
+                <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleImageChange} 
+                    className="hidden" 
+                    accept="image/*"
+                />
               </div>
-            )}
+              <p className="mt-4 text-[10px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-full">Click to change photo</p>
+              <p className="mt-2 text-xs font-bold text-slate-400 uppercase tracking-tighter">{profile.email}</p>
+            </div>
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex items-start gap-6">
-                {/* Time Box */}
-                <div className={`hidden sm:flex flex-col items-center justify-center w-24 h-24 rounded-3xl border 
-                  ${cls.isLive ? "bg-blue-600 border-blue-600 text-white" : "bg-slate-50 border-slate-100 text-slate-400"}
-                `}>
-                  <Clock size={20} className="mb-1" />
-                  <p className="text-[9px] font-bold text-center px-2">{cls.time.split(' - ')[0]}</p>
+            <div className="lg:col-span-3 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-blue-900 uppercase tracking-widest ml-1">Full Name</label>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300" size={18} />
+                    <input 
+                      type="text"
+                      value={profile.name} 
+                      onChange={(e) => setProfile({...profile, name: e.target.value})}
+                      className="w-full bg-blue-50/30 border border-blue-100 p-4 pl-12 rounded-2xl text-sm font-medium outline-none focus:border-yellow-400 focus:bg-white transition-all" 
+                    />
+                  </div>
                 </div>
 
-                <div className="space-y-2 pt-1">
-                  <h4 className="text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                    {cls.name}
-                  </h4>
-                  <div className="flex flex-wrap gap-4 items-center">
-                    <span className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                      <MapPin size={14} className="text-yellow-500" /> {cls.location}
-                    </span>
-                    <span className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                      <Users size={14} className="text-blue-400" /> {cls.students} Students Joined
-                    </span>
-                    <span className="sm:hidden flex items-center gap-1.5 text-[10px] font-bold text-blue-600 uppercase tracking-widest">
-                      <Clock size={14} /> {cls.time}
-                    </span>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold text-blue-900 uppercase tracking-widest ml-1">Speciality</label>
+                  <div className="relative">
+                    <Award className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300" size={18} />
+                    <input 
+                      type="text"
+                      value={profile.speciality} 
+                      onChange={(e) => setProfile({...profile, speciality: e.target.value})}
+                      className="w-full bg-blue-50/30 border border-blue-100 p-4 pl-12 rounded-2xl text-sm font-medium outline-none focus:border-yellow-400 focus:bg-white transition-all" 
+                    />
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                {cls.isLive ? (
-                  <button className="flex-1 md:flex-none px-8 py-4 bg-yellow-400 text-blue-900 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-lg shadow-yellow-100 flex items-center justify-center gap-2">
-                    <PlayCircle size={18} /> Start Session
-                  </button>
-                ) : (
-                  <button className="flex-1 md:flex-none px-8 py-4 bg-slate-50 text-slate-400 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center justify-center gap-2">
-                    View Details <ArrowRight size={16} />
-                  </button>
-                )}
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-blue-900 uppercase tracking-widest ml-1">Biography</label>
+                <div className="relative">
+                  <FileText className="absolute left-4 top-5 text-blue-300" size={18} />
+                  <textarea 
+                    rows={6}
+                    value={profile.bio}
+                    onChange={(e) => setProfile({...profile, bio: e.target.value})}
+                    className="w-full bg-blue-50/30 border border-blue-100 p-4 pl-12 rounded-[2rem] outline-none focus:border-yellow-400 focus:bg-white transition-all text-sm leading-relaxed"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end">
+                <button 
+                  type="submit"
+                  disabled={isUpdating}
+                  className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-bold uppercase text-[10px] tracking-widest hover:bg-blue-600 transition-all flex items-center gap-2 disabled:opacity-50"
+                >
+                  {isUpdating ? "Saving..." : <><Save size={16} className="text-yellow-400"/> Save Changes</>}
+                </button>
               </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* --- QUICK ANALYTICS PREVIEW --- */}
-      <div className="bg-slate-900 p-8 md:p-12 rounded-[3.5rem] text-white flex flex-col md:flex-row justify-between items-center gap-8 shadow-2xl shadow-blue-200">
-        <div className="text-center md:text-left">
-          <h3 className="text-2xl font-serif italic mb-2">Weekly Summary</h3>
-          <p className="text-slate-400 text-sm">You have 4 more classes scheduled for this week.</p>
         </div>
-        <div className="flex gap-4">
-           <div className="text-center bg-white/5 p-4 rounded-3xl min-w-[100px] border border-white/10">
-              <p className="text-[9px] font-bold text-blue-400 uppercase mb-1">Total Hours</p>
-              <p className="text-2xl font-bold">12.5</p>
-           </div>
-           <div className="text-center bg-white/5 p-4 rounded-3xl min-w-[100px] border border-white/10">
-              <p className="text-[9px] font-bold text-yellow-400 uppercase mb-1">New Students</p>
-              <p className="text-2xl font-bold">+08</p>
-           </div>
-        </div>
-      </div>
-
+      </form>
     </div>
   );
 }

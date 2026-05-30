@@ -2,16 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { 
   Plus, Calendar, Clock, Edit3, 
-  Trash2, MapPin, X, Upload, User, Loader2
+  Trash2, MapPin, X, Upload, User, Loader2, Building2
 } from "lucide-react";
 
 interface ClassItem {
   id: number;
   title: string;
   teacher_name: string;
-  event_date: string; // Matches DB column
-  event_time: string; // Matches DB column
+  event_date: string;
+  event_time: string;
   address: string;
+  city: string; // ✅ Interface update
   image: string | null;
   teacher_email: string;
 }
@@ -33,7 +34,8 @@ export default function ClassesManagement() {
     event_date: "",
     event_time: "",
     address: "",
-    teacher_email: "" // Will be handled by backend JWT
+    city: "", // ✅ Initial state updated
+    teacher_email: ""
   });
 
   // --- 1. FETCH DATA ---
@@ -81,13 +83,14 @@ export default function ClassesManagement() {
         event_date: cls.event_date,
         event_time: cls.event_time,
         address: cls.address,
+        city: cls.city || "", // ✅ Auto-fill City on Edit
         teacher_email: cls.teacher_email
       });
       setPreviewUrl(cls.image);
     } else {
       setIsEditing(false);
       setSelectedClassId(null);
-      setFormData({ title: "", teacher_name: "", event_date: "", event_time: "", address: "", teacher_email: "" });
+      setFormData({ title: "", teacher_name: "", event_date: "", event_time: "", address: "", city: "", teacher_email: "" });
       setPreviewUrl(null);
       setImageFile(null);
     }
@@ -110,16 +113,16 @@ export default function ClassesManagement() {
     const data = new FormData();
     data.append("title", formData.title);
     data.append("teacher_name", formData.teacher_name);
-    data.append("date", formData.event_date); // matches backend get("date")
-    data.append("time", formData.event_time); // matches backend get("time")
+    data.append("date", formData.event_date);
+    data.append("time", formData.event_time);
     data.append("address", formData.address);
-    
+    data.append("city", formData.city); // ✅ Append city to payload
+
     if (imageFile) {
       data.append("image", imageFile);
     }
 
     try {
-      // Use query param ?id= for editing to match backend PUT/DELETE
       const url = isEditing ? `/api/classes?id=${selectedClassId}` : "/api/classes";
       const method = isEditing ? "PUT" : "POST";
 
@@ -177,10 +180,11 @@ export default function ClassesManagement() {
                 </td>
                 <td className="px-8 py-8">
                   <div className="space-y-1 text-xs font-bold text-slate-600">
-                    {/* FIXED: Using correct DB property names */}
                     <div className="flex items-center gap-2"><Calendar size={14} className="text-blue-400"/> {cls.event_date}</div>
                     <div className="flex items-center gap-2"><Clock size={14} className="text-yellow-500"/> {cls.event_time}</div>
-                    <div className="flex items-center gap-2 text-slate-400 font-medium italic"><MapPin size={14}/> {cls.address}</div>
+                    <div className="flex items-center gap-2 text-slate-400 font-medium italic">
+                      <MapPin size={14}/> {cls.address} {cls.city && <span className="text-blue-500 font-bold">({cls.city})</span>}
+                    </div>
                   </div>
                 </td>
                 <td className="px-8 py-8 text-center">
@@ -196,7 +200,7 @@ export default function ClassesManagement() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-110 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => setIsModalOpen(false)} />
           <div className="relative bg-white w-full max-w-2xl rounded-[3.5rem] shadow-2xl overflow-y-auto max-h-[90vh] p-10 md:p-14 animate-in zoom-in-95">
             
@@ -252,11 +256,23 @@ export default function ClassesManagement() {
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Location Address</label>
-                <div className="relative">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                  <input required value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} placeholder="123 Serenity Lane, Colombo 07" className="w-full bg-slate-50 p-4 pl-12 rounded-2xl outline-none focus:ring-2 ring-blue-100 text-sm" />
+              {/* Grid structure splitting Address and City inputs */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="md:col-span-2 space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Location Address</label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                    <input required value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} placeholder="123 Serenity Lane" className="w-full bg-slate-50 p-4 pl-12 rounded-2xl outline-none focus:ring-2 ring-blue-100 text-sm" />
+                  </div>
+                </div>
+                
+                {/* ✅ Added City Field inside layout Grid */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">City</label>
+                  <div className="relative">
+                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                    <input required value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} placeholder="Colombo 07" className="w-full bg-slate-50 p-4 pl-12 rounded-2xl outline-none focus:ring-2 ring-blue-100 text-sm" />
+                  </div>
                 </div>
               </div>
 
