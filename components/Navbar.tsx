@@ -15,7 +15,7 @@ const Navbar = () => {
     { name: "Classes", href: "/classes" },
     { name: "Videos", href: "/videos" },
     { name: "Facilitators Network", href: "/team" },
-    { name: "Facilitators Traning", href: "/training" },
+    { name: "Facilitators Training", href: "/training" },
     { name: "Shop", href: "/shop" },
     { name: "FAQs", href: "/frequently" },
     { name: "Sign In", href: "/instructor/login" },

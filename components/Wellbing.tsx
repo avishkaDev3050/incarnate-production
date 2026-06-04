@@ -28,13 +28,7 @@ const WellbeingHero = () => {
         {/* Content Paragraphs */}
         <div className="space-y-6 text-lg leading-relaxed text-gray-600 md:text-xl">
           <p>
-            {data?.paragraph1 || "When body, mind, soul is at one true internal unity is attained."}
-          </p>
-          <p>
-            {data?.paragraph2 || "When body, mind, soul is at one with the world then true harmony can be experienced."}
-          </p>
-          <p className="font-medium text-gray-800">
-            {data?.paragraph3 || "When unity, harmony is infused with the Creator, our true destiny is ready to be discovered."}
+            {data?.paragraph1}
           </p>
         </div>
         

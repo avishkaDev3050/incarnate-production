@@ -96,9 +96,6 @@ export default function AboutUs() {
           {/* Right Side: Content */}
           <div className="space-y-8 order-2">
             <div className="space-y-2">
-              <span className="text-yellow-600 font-bold uppercase tracking-[0.3em] text-sm">
-                Since 2020
-              </span>
               <h2 className="text-5xl md:text-6xl font-serif italic text-blue-900 leading-tight">
                 {aboutData.title1} <br/> 
                 <span className="text-yellow-500">{aboutData.title2}</span>

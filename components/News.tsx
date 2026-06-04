@@ -10,8 +10,6 @@ interface Promotion {
   title1: string;
   title2: string;
   description: string;
-  btn_text: string;
-  btn_url: string;
   image_url: string;
 }
 
@@ -85,14 +83,6 @@ export default function ModernAd() {
             <p className="text-slate-600 text-lg leading-relaxed">
               {promo.description}
             </p>
-
-            <div className="pt-4">
-              <Link href={promo.btn_url || "#"}>
-                <div className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-900 hover:bg-yellow-500 hover:text-blue-900 text-white font-bold px-10 py-4 rounded-xl transition-all shadow-lg active:scale-95 cursor-pointer">
-                  {promo.btn_text || "Learn More"} <ArrowRight size={20} />
-                </div>
-              </Link>
-            </div>
           </div>
         </div>
       </div>

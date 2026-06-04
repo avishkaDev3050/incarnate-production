@@ -71,7 +71,7 @@ export default function Home() {
 
       {/* Sections එකින් එක reveal-section class එක හරහා animate වේ */}
       <div className="reveal-section will-change-transform">
-        <NewsBar />
+        <WelcomeSection />
       </div>
 
       <div className="reveal-section will-change-transform">
@@ -79,7 +79,7 @@ export default function Home() {
       </div>
 
       <div className="reveal-section will-change-transform">
-        <WelcomeSection />
+        <NewsBar />
       </div>
 
       <div className="reveal-section will-change-transform">

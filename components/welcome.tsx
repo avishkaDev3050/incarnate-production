@@ -10,8 +10,6 @@ interface Paragraph {
 interface WelcomeData {
   title1: string;
   title2: string;
-  btn_text: string;
-  btn_url: string;
   experience_text: string;
   image_url: string;
   paragraphs: Paragraph[];
@@ -51,11 +49,6 @@ export default function WelcomeSection() {
   // Data නැත්නම් පෙන්වන්නේ නැත
   if (!data) return null;
 
-  // Experience text එක වචන දෙකකට කඩා ගැනීම (Floating card එක සඳහා)
-  const expWords = data.experience_text ? data.experience_text.split(" ") : ["10+ Years ", "Experience"];
-  const expMain = expWords[0];
-  const expSub = expWords.slice(1).join(" ");
-
   return (
     <section className="py-24 px-6 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
@@ -83,18 +76,6 @@ export default function WelcomeSection() {
               <p key={para.id}>{para.content}</p>
             ))}
           </div>
-
-          <div className="pt-4">
-            <a href={data.btn_url} className="inline-block group">
-              <button className="flex items-center gap-4 bg-blue-900 hover:bg-yellow-500 text-white hover:text-blue-950 px-12 py-5 rounded-2xl font-bold transition-all duration-300 shadow-xl shadow-blue-900/10 hover:shadow-yellow-500/20 active:scale-95">
-                {data.btn_text}
-                <ArrowRight
-                  className="group-hover:translate-x-2 transition-transform duration-300"
-                  size={22}
-                />
-              </button>
-            </a>
-          </div>
         </div>
 
         {/* Right Side: Image */}
@@ -112,16 +93,6 @@ export default function WelcomeSection() {
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-blue-900/20 to-transparent" />
-          </div>
-
-          {/* Experience Floating Card */}
-          <div className="absolute -bottom-8 -left-4 lg:-left-8 bg-blue-900 text-white p-8 rounded-3xl shadow-2xl border-b-4 border-yellow-500">
-            <p className="text-2xl font-bold tracking-tight leading-tight">
-              {expMain}
-            </p>
-            <p className="text-xs text-blue-200 uppercase tracking-widest font-semibold mt-1">
-              {expSub}
-            </p>
           </div>
         </div>
 

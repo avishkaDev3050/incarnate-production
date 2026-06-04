@@ -116,7 +116,7 @@ export default function ClassesPage() {
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
             >
-              <option value="all">All Cities</option>
+              <option value="all">All Locations</option>
               {uniqueCities.map(city => (
                 <option key={city} value={city}>{city}</option>
               ))}
@@ -128,7 +128,7 @@ export default function ClassesPage() {
               value={selectedTitle}
               onChange={(e) => setSelectedTitle(e.target.value)}
             >
-              <option value="all">All Class Types</option>
+              <option value="all">All Class Themes</option>
               {uniqueTitles.map(title => (
                 <option key={title} value={title}>{title}</option>
               ))}
