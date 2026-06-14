@@ -174,7 +174,7 @@ export default function ProductDetailPage({
               {product.category}
             </span>
             <h1 className="text-5xl font-black text-slate-900 mb-6">{product.name}</h1>
-            <p className="text-4xl font-black text-slate-900 mb-8">${product.price}</p>
+            <p className="text-4xl font-black text-slate-900 mb-8">£{product.price}</p>
             
             <div className="h-px bg-slate-100 w-full mb-8"></div>
 

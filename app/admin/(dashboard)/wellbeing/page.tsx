@@ -11,8 +11,6 @@ export default function ManageWellbeing() {
   const [formData, setFormData] = useState({
     title: "",
     paragraph1: "",
-    paragraph2: "",
-    paragraph3: ""
   });
 
   // Fetch initial data
@@ -25,8 +23,6 @@ export default function ManageWellbeing() {
           setFormData({
             title: json.data.title || "",
             paragraph1: json.data.paragraph1 || "",
-            paragraph2: json.data.paragraph2 || "",
-            paragraph3: json.data.paragraph3 || ""
           });
         }
       } catch (err) {
@@ -120,26 +116,7 @@ export default function ManageWellbeing() {
                 onChange={(e) => setFormData({ ...formData, paragraph1: e.target.value })}
                 className="w-full bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-blue-500 p-4 rounded-2xl outline-none transition-all"
                 placeholder="First Paragraph..."
-              />
-              
-              <textarea
-                rows={3}
-                value={formData.paragraph2}
-                onChange={(e) => setFormData({ ...formData, paragraph2: e.target.value })}
-                className="w-full bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-blue-500 p-4 rounded-2xl outline-none transition-all"
-                placeholder="Second Paragraph..."
-              />
-              
-              <div className="relative">
-                <textarea
-                  rows={3}
-                  value={formData.paragraph3}
-                  onChange={(e) => setFormData({ ...formData, paragraph3: e.target.value })}
-                  className="w-full bg-slate-50 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-indigo-500 p-4 rounded-2xl outline-none transition-all font-medium text-slate-800"
-                  placeholder="Third Paragraph (Highlighted)..."
-                />
-                <span className="absolute top-4 right-4 text-[10px] bg-indigo-100 text-indigo-600 px-2 py-1 rounded-md font-bold uppercase">Highlighted</span>
-              </div>
+              />  
             </div>
           </div>
 

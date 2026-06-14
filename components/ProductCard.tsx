@@ -58,7 +58,7 @@ export default function ProductCard({ product }: { product: Product }) {
               Price
             </span>
             <span className="text-2xl font-black text-slate-900">
-              ${product.price}
+              £{product.price}
             </span>
           </div>
           <Link
